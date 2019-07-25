@@ -116,7 +116,11 @@ Sample of test class using junit 5 and spring test (probably you would need to d
       @Testcontainers
       @ExtendWith(SpringExtension.class)
       @ContextConfiguration(classes = YorTestSpringConfig.class)
-      @DatabaseTestData
+      @SqlConfig
+      @SqlGroup({
+          @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:your_delete_script.sql"),
+          @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:your_insert_script.sql")
+      })
       public class YourRepositoryTest {
 
           @Container
