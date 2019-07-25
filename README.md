@@ -112,6 +112,7 @@ First create your Singleton instance to create the oracle container just one tim
     }
 
 Sample of test class using junit 5 and spring test (probably you would need to delete and insert data before tests because the data state, to do that I used spring-test annotations):
+
       @Testcontainers
       @ExtendWith(SpringExtension.class)
       @ContextConfiguration(classes = YorTestSpringConfig.class)
