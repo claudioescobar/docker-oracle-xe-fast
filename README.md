@@ -1,4 +1,4 @@
-# Fast Oracle-XE 18 docker container for automated tests (fast startup with embedded volume)
+# Fast Oracle-XE 18 docker container for automated tests (fast startup with embedded data)
 The oracle-xe docker container for local development has a slow starting time turning hard to use it with automated tests(using https://www.testcontainers.org/ for example). 
 
 Testcontainers has no support for named volumns(https://github.com/testcontainers/testcontainers-java/issues/675) so I couldn't use an initialized database.
