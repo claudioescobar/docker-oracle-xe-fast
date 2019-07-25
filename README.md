@@ -112,29 +112,29 @@ First create your Singleton instance to create the oracle container just one tim
     }
 
 Sample of test class using junit 5 and spring test (probably you would need to delete and insert data before tests because the data state, to do that I used spring-test annotations):
-@Testcontainers
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = YorTestSpringConfig.class)
-@DatabaseTestData
-public class YourRepositoryTest {
+      @Testcontainers
+      @ExtendWith(SpringExtension.class)
+      @ContextConfiguration(classes = YorTestSpringConfig.class)
+      @DatabaseTestData
+      public class YourRepositoryTest {
 
-    @Container
-    private static final OracleContainer ORACLE_CONTAINER = SingletonOracleContainer.getInstance();
+          @Container
+          private static final OracleContainer ORACLE_CONTAINER = SingletonOracleContainer.getInstance();
 
-    @Autowired
-    YourRepository yourRepository;
+          @Autowired
+          YourRepository yourRepository;
 
-    @Test
-    void dbIsRunning() {
-        assertTrue(ORACLE_CONTAINER.isRunning());
-    }
+          @Test
+          void dbIsRunning() {
+              assertTrue(ORACLE_CONTAINER.isRunning());
+          }
 
-    @Test
-    void getById() {
-        # your insert-data.sql scripts should have this id registered
-        assertNotNull(yourRepository.getById(90400888000142l));
-    }
-}    
+          @Test
+          void getById() {
+              # your insert-data.sql scripts should have this id registered
+              assertNotNull(yourRepository.getById(90400888000142l));
+          }
+      }    
 
 ## Conclusion
 With this image on my machine the container creation took around 30 seconds without custom scripts execution. With more adjustments we could reduce the image size and probably the container creation will have the time reduced as well.
