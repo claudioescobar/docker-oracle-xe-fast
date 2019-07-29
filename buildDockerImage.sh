@@ -12,7 +12,7 @@
 usage() {
   cat << EOF
 
-Usage: buildDockerImage.sh -v [version] [-e | -s | -x] [-i] [-o] [Docker build option]
+Usage: buildDockerImage.sh -v [version] [-e | -s | -x | -f] [-i] [-o] [Docker build option]
 Builds a Docker Image for Oracle Database.
   
 Parameters:
@@ -21,10 +21,11 @@ Parameters:
    -e: creates image based on 'Enterprise Edition'
    -s: creates image based on 'Standard Edition 2'
    -x: creates image based on 'Express Edition'
+   -f: creates a fast image for tests based on 'Express Edition' (will put a -fast suffix on version number)
    -i: ignores the MD5 checksums
    -o: passes on Docker build option
 
-* select one edition only: -e, -s, or -x
+* select one edition only: -e, -s, -x, -f
 
 LICENSE UPL 1.0
 
@@ -70,6 +71,7 @@ checkDockerVersion() {
 ENTERPRISE=0
 STANDARD=0
 EXPRESS=0
+FAST_EXPRESS=0
 VERSION="19.3.0"
 SKIPMD5=0
 DOCKEROPS=""
@@ -81,7 +83,7 @@ if [ "$#" -eq 0 ]; then
   exit 1;
 fi
 
-while getopts "hesxiv:o:" optname; do
+while getopts "hesxfiv:o:" optname; do
   case "$optname" in
     "h")
       usage
@@ -98,6 +100,9 @@ while getopts "hesxiv:o:" optname; do
       ;;
     "x")
       EXPRESS=1
+      ;;
+    "f")
+      FAST_EXPRESS=1
       ;;
     "v")
       VERSION="$OPTARG"
@@ -125,6 +130,13 @@ elif [ $ENTERPRISE -eq 1 ]; then
   EDITION="ee"
 elif [ $STANDARD -eq 1 ]; then
   EDITION="se2"
+elif [ $FAST_EXPRESS -eq 1 ]; then
+  if [ "$VERSION" == "18.4.0" ]; then
+    EDITION="xe"
+  else
+    echo "Version $VERSION does not have Express Edition available.";
+    exit 1;
+  fi;
 elif [ $EXPRESS -eq 1 ]; then
   if [ "$VERSION" == "18.4.0" ]; then
     EDITION="xe"
@@ -144,6 +156,11 @@ fi;
 
 # Oracle Database Image Name
 IMAGE_NAME="oracle/database:$VERSION-$EDITION"
+
+if [ $FAST_EXPRESS -eq 1 ]; then
+  echo "FAST IMAGE..."
+  IMAGE_NAME="$IMAGE_NAME-fast"
+fi;
 
 # Go into version folder
 cd "$VERSION" || {

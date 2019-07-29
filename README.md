@@ -17,7 +17,7 @@ To generate the initialized image:
       OracleDatabase/SingleInstance/docker-files/18.4.0
 - execute the command below on directory OracleDatabase/SingleInstance/docker-files
 
-      ./buildDockerImage.sh  -v 18.4.0 -x
+      ./buildDockerImage.sh  -v 18.4.0 -f
 
 Now use the command 
    
@@ -26,7 +26,7 @@ Now use the command
 and you should see something like
 
     REPOSITORY                                  TAG                 IMAGE ID            CREATED             SIZE
-    oracle/database                             18.4.0-xe           d9fc386259e7        26 hours ago        13.3GB
+    oracle/database                             18.4.0-xe-fast           d9fc386259e7        26 hours ago        13.3GB
 
 Note that the image is greater than the original oracle because the volume is generated inside it.
 
@@ -49,7 +49,7 @@ Create your docker-compose.yaml file:
     version: '2'
     services:
     db:
-        image: "oracle/database:18.4.0-xe"
+        image: "oracle/database:18.4.0-xe-fast"
         container_name: "my_oracle"
         ports:
         - "1521:1521"
@@ -71,7 +71,7 @@ First create your Singleton instance to create the oracle container just one tim
     import java.io.IOException;
 
     public class SingletonOracleContainer extends OracleContainer {
-        private static final String IMAGE_VERSION = "oracle/database:18.4.0-xe";
+        private static final String IMAGE_VERSION = "oracle/database:18.4.0-xe-fast";
         private static SingletonOracleContainer container;
 
         private SingletonOracleContainer() {
