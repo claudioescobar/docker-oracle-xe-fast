@@ -1,4 +1,4 @@
-# Fast Oracle-XE 18 docker container for automated tests (fast startup with embedded volume)
+# Fast Oracle-XE 18 docker container for automated tests (fast startup with embedded data)
 The oracle-xe docker container for local development has a slow starting time turning hard to use it with automated tests(using https://www.testcontainers.org/ for example). 
 
 Testcontainers has no support for named volumns(https://github.com/testcontainers/testcontainers-java/issues/675) so I couldn't use an initialized database.
@@ -112,29 +112,34 @@ First create your Singleton instance to create the oracle container just one tim
     }
 
 Sample of test class using junit 5 and spring test (probably you would need to delete and insert data before tests because the data state, to do that I used spring-test annotations):
-@Testcontainers
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = YorTestSpringConfig.class)
-@DatabaseTestData
-public class YourRepositoryTest {
 
-    @Container
-    private static final OracleContainer ORACLE_CONTAINER = SingletonOracleContainer.getInstance();
+      @Testcontainers
+      @ExtendWith(SpringExtension.class)
+      @ContextConfiguration(classes = YorTestSpringConfig.class)
+      @SqlConfig
+      @SqlGroup({
+          @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:your_delete_script.sql"),
+          @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:your_insert_script.sql")
+      })
+      public class YourRepositoryTest {
 
-    @Autowired
-    YourRepository yourRepository;
+          @Container
+          private static final OracleContainer ORACLE_CONTAINER = SingletonOracleContainer.getInstance();
 
-    @Test
-    void dbIsRunning() {
-        assertTrue(ORACLE_CONTAINER.isRunning());
-    }
+          @Autowired
+          YourRepository yourRepository;
 
-    @Test
-    void getById() {
-        # your insert-data.sql scripts should have this id registered
-        assertNotNull(yourRepository.getById(90400888000142l));
-    }
-}    
+          @Test
+          void dbIsRunning() {
+              assertTrue(ORACLE_CONTAINER.isRunning());
+          }
+
+          @Test
+          void getById() {
+              # your insert-data.sql scripts should have this id registered
+              assertNotNull(yourRepository.getById(90400888000142l));
+          }
+      }    
 
 ## Conclusion
 With this image on my machine the container creation took around 30 seconds without custom scripts execution. With more adjustments we could reduce the image size and probably the container creation will have the time reduced as well.
