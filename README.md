@@ -14,8 +14,9 @@ To generate the initialized image:
 
 - put oracle-xe 18.4.0 rpm file(https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html) on 
 
-      OracleDatabase/SingleInstance/docker-files/18.4.0
-- execute the command below on directory OracleDatabase/SingleInstance/docker-files
+      docker-oracle-xe-fast/18.4.0
+      
+- execute the command below on the root of this repo:
 
       ./buildDockerImage.sh  -v 18.4.0 -f
 
