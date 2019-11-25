@@ -16,7 +16,7 @@ To generate the initialized image:
 
       docker-oracle-xe-fast/18.4.0
       
-- execute the command below on the root of this repo:
+- execute the command below on the root of this repository:
 
       ./buildDockerImage.sh  -v 18.4.0 -f
 
